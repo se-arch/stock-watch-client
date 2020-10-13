@@ -9,11 +9,9 @@ type DataType = {
     labels: string[]
 };
 
-
 type ChartProps = {
     data: DataType;
     symbol: string;
-    interval: number[];
 };
 type ChartState = {
     data: DataType;
