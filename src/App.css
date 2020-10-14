@@ -1,44 +1,68 @@
+body {
+    background-color: white;
+}
+
 body > #root, .background {
   height: 100vh;
+  background-color: white;
 }
 
 .App {}
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+.header {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    background-color: white;
+    z-index: 2;
+    height: 325px;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
+.header > span {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
 
-div.background {
-    background-color: #282c34;
+    width: 754px;
+    background-color: white;
 }
 
 .content {
-    margin-left: auto;
-    margin-right: auto;
     margin-left: 20%;
     margin-right: 20%;
+
+    overflow: none;
+    position:relative;
+    top: 300px;
+}
+
+.content > .center {
+    width: 80%;
+    max-width: 1280px;
+    margin: 0 auto;
 }
 
 .title {
+    display: flex;
     font-size: 70px;
     font-family: "Monem";
     color: #73d7e6;
     padding-bottom: 50px;
     padding-top: 30px;
 
-    padding-left: auto;
-    padding-right: auto;
+    width: 100%;
+    margin-bottom: 31px;
+}
+
+.datepicker {
+    color: white;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.calendartInput {
+    display: inline;
+    margin-left: 50px;
 }
 
 .title > span {
@@ -46,39 +70,57 @@ div.background {
     margin-right: auto;
 }
 
-.MainInput {
-    width: 80%;
-    height: 30px;
+.interaction {
+    display: flex;
+    justify-content: space-between;
+}
+.mergeButton {
+    display: flex;
+    align-items: flex-start;
+    position: relative;
+}
+.MainInputContainer  {
+    width: 100%;
+}
+.MainInputContainer > div  {
+    display: flex;
+    width: 100%;
+}
+.MainInputContainer > div > div {
+    width: 100%;
+}
+.MainInputContainer > div > div.buttonContainer {
+    width: auto;
+}
 
-    margin-left: auto;
-    margin-right: auto;
+.buttonContainer {
+    display: flex;
+    width: auto;
+    align-items: flex-start;
 }
 
 .chartList {
     display: flex;
     flex-wrap: wrap;
+
     flex-direction: row;
+    align-items: flex-start;
+    flex-direction: row-reverse;
+
+    height: 100vh;
+    overflow-y: visible;
+
+    padding-top: 20px;
 }
 
 .chartContainer {
-    flex: 50%;
-    padding: 20px;
-
-    /* border: red solid;
-    box-sizing:border-box */
+    flex: 100%;
 }
 
-@media screen and (max-width: 992px) {
-  .chartContainer {
-    flex: 33%;
-  }
-}
-
-/* On screens that are 600px wide or less, make the columns stack on top of each other instead of next to each other */
-@media screen and (max-width: 600px) {
-  .chartList {
-    flex-direction: column;
-  }
+@keyframes onErrorAnimation {
+    25%  { background:red; }
+    50%{ background:red; }
+	100%{ background:white; }
 }
 
 @font-face {

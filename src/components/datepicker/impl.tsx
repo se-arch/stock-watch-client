@@ -1,66 +1,94 @@
 import React from "react"
-import moment from 'moment';
 
 import DatePicker from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css";
 
+import { IconButton } from '@material-ui/core';
+import UpdateIcon from '@material-ui/icons/Update';
+import { Input, TextField } from '@material-ui/core';
+// import { TextField } from '@material-ui/pickers';
+
 type DatePickerState = {
     startDate: Date | null,
     endDate: Date | null,
+    minDate: Date | null,
+    maxDate: Date | null,
 }
 
 type DatePickerProps = {
-    update: (interval: DatePickerState) => void;
+    feedback: (interval: { start: Date, end: Date }) => void;
+    start: Date,
+    end: Date,
+    minDate: Date,
+    maxDate: Date
 }
 
 class DatePickerWrapper extends React.Component<DatePickerProps, DatePickerState> {
     state: DatePickerState = {
         startDate: null,
         endDate: null,
+        minDate: null,
+        maxDate: null,
     };
 
-    private defaultEndDate: Date = new Date(
-        moment().subtract('months', 3).unix() * 1000
-    );
-    private defaultStartDate: Date = new Date(
-        moment().subtract('months', 24).unix() * 1000
-    );
+    handleUpdateRange = () => {
+        let { startDate, endDate } = this.state;
+        startDate = startDate ? startDate : this.props.start;
+        endDate = endDate ? endDate : this.props.end;
 
-    componentDidMount() {
-        this.setState({
-            startDate: this.defaultStartDate,
-            endDate: this.defaultEndDate
-        })
+        this.props.feedback({ start: startDate as Date, end: endDate as Date });
     }
 
-    handleUpdateRange = () => {
-        this.props.update(this.state);
+    componentDidMount() {
+        this.setState({ startDate: this.props.start, endDate: this.props.end });
+        this.setState({ minDate: this.props.minDate, maxDate: this.props.maxDate });
     }
 
     render() {
+        const startDate = this.state.startDate ? this.state.startDate : this.props.start;
+        const endDate = this.state.endDate ? this.state.endDate : this.props.end;
+
+        const commonProps = {
+            showMonthYearDropdown: true,
+            showMonthYearPicker: true,
+            dateFormat: "MM/yyyy",
+            startDate: startDate,
+            endDate: endDate,
+            className: "calendartInput",
+            customInput: (<Input></Input>),
+            customTimeInput: (
+                <TextField
+                  id="date"
+                  label="Birthday"
+                  type="date"
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
+                />
+            )
+        }
+
         return (
             <div className="datepicker">
                 <DatePicker
-                  selected={this.state.startDate}
+                  selected={startDate}
                   onChange={date => {this.setState({startDate: date as Date})}}
                   selectsStart
-                  showMonthYearDropdown
-                  startDate={this.state.startDate}
-                  endDate={this.state.endDate}
-                  minDate={this.defaultStartDate}
-                  maxDate={this.defaultEndDate}
+                  minDate={this.state.minDate}
+                  maxDate={this.props.end}
+                  {...commonProps}
                 />
                 <DatePicker
-                  selected={this.state.endDate}
+                  selected={endDate}
                   onChange={date => {this.setState({endDate: date as Date})}}
                   selectsEnd
-                  showMonthYearDropdown
-                  startDate={this.state.startDate}
-                  endDate={this.state.endDate}
-                  minDate={this.state.startDate}
-                  maxDate={this.defaultEndDate}
+                  minDate={startDate}
+                  maxDate={this.state.maxDate}
+                  {...commonProps}
                 />
-                <button className="updateDateRange" onClick={this.handleUpdateRange}>Update</button>
+                <IconButton className="updateDateRange" onClick={this.handleUpdateRange}>
+                    <UpdateIcon />
+                </IconButton>
             </div>
         );
     }

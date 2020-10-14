@@ -8,25 +8,23 @@ type APIDataType = {
     };
 };
 
-type Interval = {
-    startDate: Date,
-    endDate: Date,
-}
-
 type ChartListProps = {
     data: APIDataType,
-    interval: Interval,
+    merged: boolean,
+    removeSymbol: (symbol: string) => void
 };
 type ChartListState = {
-    chartData: APIDataType,
-    interval: Interval,
+    chartData: APIDataType
 };
 
 class ChartList extends React.Component<ChartListProps, ChartListState> {
     state: ChartListState = {
-        chartData: {},
-        interval: {startDate: new Date(), endDate: new Date()}
+        chartData: {}
     };
+
+    removeChart = (item: ChartItem) => {
+        this.props.removeSymbol(item.symbol);
+    }
 
     private getLabel(timestamp: number) {
         const dateObj = new Date(timestamp * 1000);
@@ -37,32 +35,54 @@ class ChartList extends React.Component<ChartListProps, ChartListState> {
         return `${day} / ${month}`;
     }
 
+    private getData() {
+        const chartsData: any[] = [];
+        const data: any[] = [];
+
+        Object.entries(this.props.data).reverse().map(item => {
+            const symbol = item[0];
+
+            if (item[1].s === "no_data") {
+                return;
+            }
+
+            const points = item[1].o as number[];
+            const labels = (item[1].t as number[]).map(this.getLabel);
+
+            if (!this.props.merged) {
+                chartsData.push({
+                    symbol, data: [{ points, labels, symbol }]
+                });
+            } else {
+                data.push({ points, labels, symbol });
+            }
+        });
+
+        if(data.length && this.props.merged) {
+            chartsData.push({ symbol: "merged", data })
+        }
+
+        return chartsData;
+    }
+
     render() {
+        const data = this.getData();
+
         return (
             <div className="chartList">
-                {Object.entries(this.props.data).map(item => {
-                    const symbol = item[0];
-
-                    if(item[1].s === "no_data") {
-                        return <span key={symbol}></span>
-                    }
-
-                    const points = item[1].o as number[];
-                    const labels = (item[1].t as number[]).map(this.getLabel);
-
-                    const data = {
-                        "points": points,
-                        "labels": labels
-                    }
-
-                    return (
-                        <ChartItem
-                            data={data}
-                            key={symbol}
-                            symbol={symbol}
-                        />
-                    )
-                })}
+                {
+                    data.map(item => {
+                        const { data, symbol } = item;
+                        return (
+                            <ChartItem
+                                data={data}
+                                key={symbol}
+                                identifier={symbol}
+                                remove={this.removeChart}
+                            />
+                        );
+                    })
+                }
             </div>
         );
     }
