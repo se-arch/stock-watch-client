@@ -3,7 +3,8 @@ import { debounce } from 'ts-debounce';
 import fetch from 'node-fetch'
 
 class StockAPI {
-    private baseUrl = process.env.API_URL || "http://localhost:5000";
+    // private baseUrl = process.env.API_URL || "http://localhost:5000";
+    private baseUrl = "https://stock-watch--server.herokuapp.com";
 
     getData = async (query: string, startDate: number, endDate: number) => {
         console.log(`querying ${this.baseUrl}`);
