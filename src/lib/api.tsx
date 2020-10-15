@@ -3,9 +3,11 @@ import { debounce } from 'ts-debounce';
 import fetch from 'node-fetch'
 
 class StockAPI {
-    private baseUrl = "http://localhost:5000";
+    private baseUrl = process.env.API_URL || "http://localhost:5000";
 
     getData = async (query: string, startDate: number, endDate: number) => {
+        console.log(`querying ${this.baseUrl}`);
+
         try {
             const url: string = `${this.baseUrl}/search?value=${query}&startDate=${startDate}&endDate=${endDate}`;
             const response = await fetch(url);
